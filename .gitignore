@@ -48,6 +48,9 @@ local.properties
 /android/.settings
 /android/.project
 /android/.classpath
+/android/gradle
+/android/gradlew
+/android/gradlew.bat
 
 # BUCK
 buck-out/

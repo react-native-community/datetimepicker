@@ -17,11 +17,11 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import android.widget.DatePicker;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -49,6 +49,24 @@ public class RNDatePickerDialogFragment extends DialogFragment {
     instance.updateDate(date.year(), date.month(), date.day());
   }
 
+  private static int getThemeResourceId(String theme, Context activityContext, RNDatePickerDisplay display) {
+    String themeIdentifier;
+
+    if (theme.isEmpty()) {
+      themeIdentifier = display == RNDatePickerDisplay.SPINNER
+              ? "SpinnerDatePickerDialog"
+              : "CalendarDatePickerDialog";
+
+    } else {
+      themeIdentifier = theme;
+    }
+
+    return activityContext.getResources().getIdentifier(
+            themeIdentifier,
+            "style",
+            activityContext.getPackageName());
+  }
+
   static @NonNull
   DatePickerDialog getDialog(
           Bundle args,
@@ -66,48 +84,37 @@ public class RNDatePickerDialogFragment extends DialogFragment {
       display = RNDatePickerDisplay.valueOf(args.getString(RNConstants.ARG_DISPLAY).toUpperCase(Locale.US));
     }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    String theme = "";
+
+    if (args != null && args.getString(RNConstants.ARG_THEME, null) != null) {
+      theme = args.getString(RNConstants.ARG_THEME);
+    }
+
+    DatePickerDialog dialog = new RNDismissableDatePickerDialog(
+            activityContext,
+            getThemeResourceId(theme, activityContext, display),
+            onDateSetListener,
+            year,
+            month,
+            day,
+            display
+    );
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
       switch (display) {
-        case CALENDAR:
-        case SPINNER:
-          String resourceName = display == RNDatePickerDisplay.CALENDAR
-                  ? "CalendarDatePickerDialog"
-                  : "SpinnerDatePickerDialog";
-          return new RNDismissableDatePickerDialog(
-                  activityContext,
-                  activityContext.getResources().getIdentifier(
-                          resourceName,
-                          "style",
-                          activityContext.getPackageName()),
-                  onDateSetListener,
-                  year,
-                  month,
-                  day,
-                  display
-          );
-        default:
-          return new RNDismissableDatePickerDialog(
-                  activityContext,
-                  onDateSetListener,
-                  year,
-                  month,
-                  day,
-                  display
-          );
-      }
-    } else {
-      DatePickerDialog dialog = new RNDismissableDatePickerDialog(activityContext, onDateSetListener, year, month, day, display);
-      switch (display) {
-        case CALENDAR:
-          dialog.getDatePicker().setCalendarViewShown(true);
-          dialog.getDatePicker().setSpinnersShown(false);
-          break;
         case SPINNER:
           dialog.getDatePicker().setCalendarViewShown(false);
           break;
+        case CALENDAR:
+        case DEFAULT:
+        default:
+          dialog.getDatePicker().setCalendarViewShown(true);
+          dialog.getDatePicker().setSpinnersShown(false);
+          break;
       }
-      return dialog;
     }
+
+    return dialog;
   }
 
   static DatePickerDialog createDialog(
