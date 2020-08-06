@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### 2.7.0
+
+- Add support for 'locale' prop for Android.
+- Add 'positiveButtonLabel' and 'negativeButtonLabel' props to pass Android's DateTimePicker dialog buttons.
+
 ### 2.6.0
 
 - Add time picker for Windows [#206](https://github.com/react-native-community/datetimepicker/pull/206)

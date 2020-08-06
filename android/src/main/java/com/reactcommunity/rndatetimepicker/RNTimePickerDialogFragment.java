@@ -111,6 +111,16 @@ public class RNTimePickerDialogFragment extends DialogFragment {
 
     TimePickerDialog dialog = getDialog(args, activityContext, onTimeSetListener);
 
+    if (args != null) {
+      // for dialog buttons
+      if (args.containsKey(RNConstants.ARG_POSITIVE_BUTTON_LABEL)) {
+        dialog.setButton(TimePickerDialog.BUTTON_POSITIVE, args.getString(RNConstants.ARG_POSITIVE_BUTTON_LABEL), dialog);
+      }
+      if (args.containsKey(RNConstants.ARG_NEGATIVE_BUTTON_LABEL)) {
+        dialog.setButton(TimePickerDialog.BUTTON_NEGATIVE, args.getString(RNConstants.ARG_NEGATIVE_BUTTON_LABEL), dialog);
+      }
+    }
+
     if (args != null && args.containsKey(RNConstants.ARG_NEUTRAL_BUTTON_LABEL)) {
       dialog.setButton(DialogInterface.BUTTON_NEUTRAL, args.getString(RNConstants.ARG_NEUTRAL_BUTTON_LABEL), mOnNeutralButtonActionListener);
     }

@@ -26,6 +26,7 @@ import android.widget.DatePicker;
 import java.util.Calendar;
 import java.util.Locale;
 
+
 @SuppressLint("ValidFragment")
 public class RNDatePickerDialogFragment extends DialogFragment {
   private DatePickerDialog instance;
@@ -65,7 +66,7 @@ public class RNDatePickerDialogFragment extends DialogFragment {
     if (args != null && args.getString(RNConstants.ARG_DISPLAY, null) != null) {
       display = RNDatePickerDisplay.valueOf(args.getString(RNConstants.ARG_DISPLAY).toUpperCase(Locale.US));
     }
-
+    
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       switch (display) {
         case CALENDAR:
@@ -86,6 +87,10 @@ public class RNDatePickerDialogFragment extends DialogFragment {
                   display
           );
         default:
+          if (args != null && args.containsKey(RNConstants.ARG_LOCALE)) {
+            // for header (NOTE: will change the app locale)
+            Locale.setDefault(getLocale(args));
+          }
           return new RNDismissableDatePickerDialog(
                   activityContext,
                   onDateSetListener,
@@ -115,9 +120,24 @@ public class RNDatePickerDialogFragment extends DialogFragment {
           Context activityContext,
           @Nullable OnDateSetListener onDateSetListener) {
 
+    if (args != null && args.containsKey(RNConstants.ARG_LOCALE)) {
+      // for calendar's month and days of the week (NOTE: must be set before Calendar instance)
+      activityContext.getResources().getConfiguration().setLocale(getLocale(args));
+    }
+    
     final Calendar c = Calendar.getInstance();
 
     DatePickerDialog dialog = getDialog(args, activityContext, onDateSetListener);
+
+    if (args != null) {
+      // for dialog buttons
+      if (args.containsKey(RNConstants.ARG_POSITIVE_BUTTON_LABEL)) {
+        dialog.setButton(DatePickerDialog.BUTTON_POSITIVE, args.getString(RNConstants.ARG_POSITIVE_BUTTON_LABEL), dialog);
+      }
+      if (args.containsKey(RNConstants.ARG_NEGATIVE_BUTTON_LABEL)) {
+        dialog.setButton(DatePickerDialog.BUTTON_NEGATIVE, args.getString(RNConstants.ARG_NEGATIVE_BUTTON_LABEL), dialog);
+      }
+    }
 
     if (args != null && args.containsKey(RNConstants.ARG_NEUTRAL_BUTTON_LABEL)) {
       dialog.setButton(DialogInterface.BUTTON_NEUTRAL, args.getString(RNConstants.ARG_NEUTRAL_BUTTON_LABEL), mOnNeutralButtonActionListener);
@@ -171,5 +191,11 @@ public class RNDatePickerDialogFragment extends DialogFragment {
 
   /*package*/ void setOnNeutralButtonActionListener(@Nullable OnClickListener onNeutralButtonActionListener) {
     mOnNeutralButtonActionListener = onNeutralButtonActionListener;
+  }
+
+  static Locale getLocale(Bundle args) {
+    String locale = args.getString(RNConstants.ARG_LOCALE);
+    String[] separated = locale.split("-");
+    return new Locale(separated[0], separated[1]);
   }
 }

@@ -51,9 +51,11 @@ React Native date & time picker component for iOS, Android and Windows.
     - [`dateFormat` (`optional`, `Windows only`)](#dateFormat-optional-windows-only)
     - [`firstDayOfWeek` (`optional`, `Windows only`)](#firstDayOfWeek-optional-windows-only)
     - [`textColor` (`optional`, `iOS only`)](#textColor-optional-ios-only)
-    - [`locale` (`optional`, `iOS only`)](#locale-optional-ios-only)
+    - [`locale` (`optional`)](#locale-optional)
     - [`is24Hour` (`optional`, `Windows and Android only`)](#is24hour-optional-windows-and-android-only)
     - [`neutralButtonLabel` (`optional`, `Android only`)](#neutralbuttonlabel-optional-android-only)
+    - [`positiveButtonLabel` (`optional`, `Android only`)](#positivebuttonlabel-optional-android-only)
+    - [`negativeButtonLabel` (`optional`, `Android only`)](#negativebuttonlabel-optional-android-only)
     - [`minuteInterval` (`optional`)](#minuteinterval-optional)
     - [`style` (`optional`, `iOS only`)](#style-optional-ios-only)
   - [Migration from the older components](#migration-from-the-older-components)
@@ -296,7 +298,7 @@ Allows changing of the textColor of the date picker.
 <RNDateTimePicker textColor="red" />
 ```
 
-#### `locale` (`optional`, `iOS only`)
+#### `locale` (`optional`)
 
 Allows changing of the locale of the component. By default it uses the device's locale.
 
@@ -319,6 +321,21 @@ Pressing button can be observed in onChange handler as `event.type === 'neutralB
 
 ```js
 <RNDateTimePicker neutralButtonLabel="clear" />
+```
+
+#### `positiveButtonLabel` (`optional`, `Android only`)
+
+Allows passing customized label to the 'ok' button on picker dialog, like localized string to support localization.
+```js
+<RNDateTimePicker positiveButtonLabel="Select" />
+```
+
+#### `negativeButtonLabel` (`optional`, `Android only`)
+
+Allows passing customized label to the 'cancel' button on picker dialog, like localized string to support localization.
+
+```js
+<RNDateTimePicker negativeButtonLabel="Dismiss" />
 ```
 
 #### `minuteInterval` (`optional`)
