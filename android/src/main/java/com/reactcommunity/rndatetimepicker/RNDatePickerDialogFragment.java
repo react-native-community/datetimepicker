@@ -149,7 +149,11 @@ public class RNDatePickerDialogFragment extends DialogFragment {
       c.set(Calendar.MILLISECOND, 999);
       datePicker.setMaxDate(c.getTimeInMillis());
     }
-
+    final RNDate date = new RNDate(args);
+    final int year = date.year();
+    final int month = date.month();
+    final int day = date.day();
+    datePicker.init(year,month,day, dialog);
     return dialog;
   }
 
